@@ -9,8 +9,9 @@ A light, secure Git forge for people and agents, written in Go: repository
 hosting, a web UI, an administration API over gRPC, and Actions runners
 scheduled through GARM.
 
-**It is early.** The admin gRPC API and its CLI are implemented (milestone 2a).
-Hosting, sign-in and the web UI are still design only, and the `actions`
+**It is early.** The admin gRPC API and its CLI, and read-only
+`git clone` and `git fetch` over SSH and smart HTTP (protocol v2), are
+implemented (milestone 2). Push, sign-in and the web UI are still design only, and the `actions`
 repository holds a licence and a README. This site says which is which; it does
 not describe the design as if it were running.
 

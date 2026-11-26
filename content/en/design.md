@@ -11,7 +11,7 @@ read for every claim. Where the two differ, the design document wins.
 
 ## Status {#status}
 
-Milestone 2a, the admin gRPC API and its CLI, is implemented. The rest is not.
+Milestone 2 (the admin gRPC API and its CLI; clone and fetch over SSH and smart HTTP) is implemented. The rest is not.
 
 ## Three repositories {#three-repositories}
 
@@ -58,7 +58,7 @@ type to be contributed to GARM.
 ## Milestones {#milestones}
 
 1. `gitproto`: pkt-line, protocol v2 capability advertisement, `ls-refs` and `fetch`, with fuzzers and a benchmark against `git upload-pack`.
-2. `forge`: storage layout, accounts, admin gRPC API with FIDO2 assertions and its CLI; SSH and HTTP clone. The admin API and CLI (2a) are implemented.
+2. `forge`: storage layout, accounts, admin gRPC API with FIDO2 assertions and its CLI; SSH and HTTP clone. Implemented: fetch is protocol v2 only and read only (`git-upload-pack`); push is refused with a message naming milestone 4. Repositories live at `<repos-root>/<owner>/<name>.git`; a reader must be the owner, or the repository must hold a `git-daemon-export-ok` file (anonymous HTTP read is public repositories only). A missing and a forbidden repository give the same answer. SSH uses the per-user keys of the admin API and runs `git-upload-pack` only (no shell, pty, forwarding or agent); HTTP is TLS 1.3, anonymous, and refuses protocol v0/v1, the dumb protocol and receive-pack with a message that says why. Each transport bounds request size, pkt-line count, time per request, and concurrent sessions per account (per address over HTTP) and in total.
 3. `forge`: OIDC sign-in through the bridge, read-only web UI.
 4. `gitproto` and `forge`: receive-pack with in-process push policy.
    - **A1** (agent-oriented layer, see [Agent VCS]({{< relref "agent-vcs" >}})): read and write without a clone, stable change ids and immutable revision refs, server-signed commits, compare-and-swap ref updates, idempotent writes, agent-session identities.
