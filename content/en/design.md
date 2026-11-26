@@ -61,6 +61,11 @@ type to be contributed to GARM.
 2. `forge`: storage layout, accounts, admin gRPC API with FIDO2 assertions and its CLI; SSH and HTTP clone. The admin API and CLI (2a) are implemented.
 3. `forge`: OIDC sign-in through the bridge, read-only web UI.
 4. `gitproto` and `forge`: receive-pack with in-process push policy.
+   - **A1** (agent-oriented layer, see [Agent VCS]({{< relref "agent-vcs" >}})): read and write without a clone, stable change ids and immutable revision refs, server-signed commits, compare-and-swap ref updates, idempotent writes, agent-session identities.
 5. `actions`: workflow planning, runner protocol server, GARM `gitea` type.
+   - **A2**: CI verdicts bound to the exact commit, server-side merge gated on them and on a FIDO2-signed human approval for protected refs, event stream. **A3**: path-scoped leases, path permissions. **A4**: the forge backend of `forge-agentd`. **A5**: atomic multi-repository change sets (at most 64 repositories).
 6. Pull requests and reviews in the web UI.
 7. GARM `govcs` forge type; artifacts.
+
+**A0**, the local daemon `forge-agentd` with a GitHub backend, does not depend on
+the milestones above and comes first (see [Agent VCS]({{< relref "agent-vcs" >}})).
