@@ -74,3 +74,20 @@ GitHub (milestone A0), which does not wait for the forge.
 - **A3**: leases with fencing epochs, path permissions.
 - **A4**: the forge backend of `forge-agentd`.
 - **A5**: atomic multi-repository change sets.
+
+## Inspiration {#inspiration}
+
+This design is inspired by Anthropic's account of its internal agent-oriented
+source control. Scion is Anthropic's internal system and has not been released;
+go-vcs has no affiliation with Anthropic and is not endorsed by it. The agent
+layer is an independent design on top of git.
+
+- "Redesigning source control at Anthropic", Anthropic Engineering, 2026-10-13
+  (updated 2026-10-15): <https://www.anthropic.com/engineering/redesigning-source-control>.
+  It also mentions Antique, Anthropic's code review tool, which is not described
+  in a post of its own.
+
+Taken from it: server-side reads and writes without a clone, stable change
+identity, server-side merge gated on CI for the exact commit, path leases, one
+local daemon, atomic multi-repository changes. Not taken: merge-then-fix,
+Spanner, FUSE checkouts.
