@@ -11,7 +11,8 @@ scheduled through GARM.
 
 **It is early.** The admin gRPC API and its CLI, and read-only
 `git clone` and `git fetch` over SSH and smart HTTP (protocol v2), are
-implemented (milestone 2). Push, sign-in and the web UI are still design only, and the `actions`
+implemented (milestone 2), as are OIDC sign-in and a read-only web UI
+(milestone 3). Push is still design only, and the `actions`
 repository holds a licence and a README. This site says which is which; it does
 not describe the design as if it were running.
 
