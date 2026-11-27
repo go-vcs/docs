@@ -37,7 +37,9 @@ small client agents call. Source and releases:
 forge-agentd --token-file ~/.github-token
 forge-agent --label build-7 verdict go-vcs/forge <40-hex-commit>
 forge-agent --label build-7 wait    go-vcs/forge <40-hex-commit> --timeout 20m
+forge-agent --label build-7 events  go-vcs/forge <40-hex-commit> --timeout 30m
 forge-agent --label build-7 merge   go-vcs/forge 6 <40-hex-commit>
+forge-agent --label build-7 materialize go-vcs/forge <40-hex-commit> work/1 --path cmd
 ```
 
 Exit codes: 0 green or done, 1 error, 3 red or refused by the gate, 4 pending
@@ -47,7 +49,31 @@ with `--request-id`.
 ## Status {#status}
 
 Done: verdicts, waits, gated merge, idempotency, sessions, the socket,
-structured errors, fuzzed parsers. Not done: the verified object cache,
-`Materialize`, a push event stream (the hub polls), a keychain credential
-option. Leases, changes and change sets answer `UNSUPPORTED_BY_BACKEND` until the
-forge backend exists.
+structured errors, fuzzed parsers, the verified object cache (`blob`, `tree`),
+`Materialize` and the event stream. Not done: a push feed from GitHub (GitHub
+has none, so the hub polls), a keychain credential option, a bulk fetch path for
+`Materialize` (objects are fetched one at a time), the timings of `Materialize`
+against `git clone`. Leases, changes and change sets answer
+`UNSUPPORTED_BY_BACKEND` until the forge backend exists.
+
+## Objects and checkouts {#objects}
+
+Every object the daemon returns is verified: its id is recomputed from the bytes
+GitHub sent, and a mismatch is `OBJECT_MISMATCH`, nothing kept. The cache is
+bounded in entries and bytes.
+
+`forge-agent materialize <repo> <commit> <dir> [--path p]...` writes a commit's
+tree, or only the paths given, into a new directory under the daemon's
+`--materialize-root` (0700, never under the temporary directory). Writes go
+through a root scoped to that directory; `..`, absolute and empty elements,
+`.git` in any case, duplicate names and symlinks that escape are refused; files,
+bytes, depth and concurrency are bounded; a failure removes the output.
+
+## Events {#events}
+
+`forge-agent events <repo> <commit>` prints one JSON line per change of a
+commit's verdict and ends on the final one. Streams and waiters share the one
+poll loop of their commit. The semantics are level-triggered: observations
+between two polls coalesce, and the final verdict is never skipped. Counted, not
+timed: 13 waiters and 13 streams on one commit made 21 upstream reads where 26
+independent pollers made 520 over the same window.
