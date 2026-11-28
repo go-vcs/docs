@@ -49,12 +49,18 @@ with `--request-id`.
 ## Status {#status}
 
 Done: verdicts, waits, gated merge, idempotency, sessions, the socket,
-structured errors, fuzzed parsers, the verified object cache (`blob`, `tree`),
-`Materialize` and the event stream. Not done: a push feed from GitHub (GitHub
-has none, so the hub polls), a keychain credential option, a bulk fetch path for
-`Materialize` (objects are fetched one at a time), the timings of `Materialize`
-against `git clone`. Leases, changes and change sets answer
-`UNSUPPORTED_BY_BACKEND` until the forge backend exists.
+structured errors, fuzzed parsers, the verified object cache (`blob`, `tree`)
+in memory and on disk (`--cache-dir`), `Materialize` with a bulk fetch path, the
+keychain credential option (`--token-keychain`) and the event stream. Not done:
+a push feed from GitHub (GitHub has none, so the hub polls), the timings of
+`Materialize` against `git clone` (deferred: the machine load was above 8).
+Leases, changes and change sets answer `UNSUPPORTED_BY_BACKEND` until the forge
+backend exists.
+
+Windows gap of the disk cache: on Unix the cache directory is refused unless it
+is mode 0700. On Windows Go reports every directory's mode bits as 0777, so that
+check is skipped there and the directory's access control list is not read: the
+privacy of the cache directory is not verified on Windows.
 
 ## Objects and checkouts {#objects}
 
